@@ -1,0 +1,22 @@
+/* styles.css */
+
+.Herosection-img {
+    max-width: 100%;
+}
+
+@media (min-width: 768px) {
+    .Herosection-img {
+        width: 33.33%;
+    }
+}
+
+@media (max-width: 768px) {
+    .Herosection-content {
+        text-align: center;
+    }
+
+    .Herosection-button {
+        width: 100%;
+        font-size: 1.25rem;
+    }
+}
