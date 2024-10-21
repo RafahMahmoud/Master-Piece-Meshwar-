@@ -29,7 +29,7 @@ function Home() {
   const slider1Images = [ p1 ,p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15];
   
   return (
-      <div className="container mx-auto  ">
+      <div className="mx-auto  ">
          <NavBar/>
           <div className="Herosection mx-[7rem] flex flex-col md:flex-row gap-8 ">
               <div className="Herosection-content mt-[4rem]">

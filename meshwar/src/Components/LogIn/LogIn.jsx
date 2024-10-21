@@ -129,18 +129,20 @@
 
 
 
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import route from '../../assets/z-TrhLCn1abMU-unsplash.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser, resetError } from '../../store/slices/authSlice';
 
 const LogIn = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { error, loading } = useSelector((state) => state.auth);
 
   const validateEmail = email => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -148,32 +150,23 @@ const LogIn = () => {
   };
 
   const login = async () => {
-    setError("");
-
     if (!validateEmail(loginEmail)) {
-      setError("Invalid email format");
+      dispatch(resetError());
+      dispatch({ type: 'auth/setError', payload: "Invalid email format" });
       return;
     }
 
     if (loginPassword.length < 6) {
-      setError("Password must be at least 6 characters long");
+      dispatch(resetError());
+      dispatch({ type: 'auth/setError', payload: "Password must be at least 6 characters long" });
       return;
     }
 
     try {
-      const storedEmail = localStorage.getItem("register");
-      const storedPassword = localStorage.getItem("registerpass");
-
-      if (storedEmail === loginEmail && storedPassword === loginPassword) {
-        sessionStorage.setItem("user", loginEmail);
-        setLoginEmail("");
-        setLoginPassword("");
-        navigate("/");
-      } else {
-        setError("Incorrect email or password. Please try again.");
-      }
+      await dispatch(loginUser({ email: loginEmail, password: loginPassword })).unwrap();
+      navigate("/");
     } catch (error) {
-      setError("An error occurred. Please try again.");
+      // Error is already handled in the slice
     }
   };
 
@@ -203,16 +196,17 @@ const LogIn = () => {
         />
         <button
           onClick={login}
-          className="w-full py-2 bg-teal-500 mb-[1rem] text-white rounded-lg hover:bg-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          disabled={loading}
+          className={`w-full py-2 ${loading ? 'bg-teal-300 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-400'} text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mb-4`}
         >
-          Login
+          {loading ? 'Logging in...' : 'Login'}
         </button>
         <button
-                        
-                        className="w-full py-2 bg-teal-500 hover:bg-teal-400 text-white rounded-lg flex items-center justify-center mb-4">
-                        <FontAwesomeIcon icon={faGoogle} className="mr-2" />
-                        <span>Sign Up With Google</span>
-                    </button>
+          className="w-full py-2 bg-teal-500 hover:bg-teal-400 text-white rounded-lg flex items-center justify-center mb-4"
+        >
+          <FontAwesomeIcon icon={faGoogle} className="mr-2" />
+          <span>Sign In With Google</span>
+        </button>
         <div className="mt-4 text-center">
           <Link to="/SignUp" className="text-teal-500 hover:underline">
             <p>Don't have an account yet?</p>
