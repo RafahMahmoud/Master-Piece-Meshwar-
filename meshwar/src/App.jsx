@@ -17,7 +17,7 @@ import SignUp from './Components/SignUP/SignUp';
 import MeshwarAdminDashboard from './Components/Dashboard/Dashboard';
 import Qestionair from './Components/Questionair/Questionair';
 import Admin from './Components/Admin/Admin';
-
+import Community from './Components/Community/community';
 
 function App() {
  
@@ -30,6 +30,7 @@ function App() {
         <Route path="Questionair" element={<Qestionair />} />
         <Route path="Dashboard" element={<MeshwarAdminDashboard />} />
         <Route path="BecomePartner" element={<BecomePartner />} />
+        <Route path="Community" element={<Community />} />
           <Route path="/" element={<Home />} />
           <Route path="LogIn" element={<LogIn />} />
           <Route path="NewGroup" element={<NewGroup />} />

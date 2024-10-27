@@ -9,7 +9,7 @@ const userSchema = new Schema({
   bio: { type: String },
   gender: { type: String, enum: ['male', 'female'], required: true },
   dateOfBirth: { type: Date, required: true },
-  phoneNumber: { type: Number, required: true },
+  phoneNumber: { type: Number},
   isActive: { type: Boolean, default: true },
   isDeleted: { type: Boolean, default: false },
   socialLinks: {

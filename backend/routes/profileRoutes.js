@@ -63,13 +63,8 @@ const { authenticateToken } = require('../middlewares/authMiddleware');
 const profileController = require('../controllers/profileController');
 const upload = require('../middlewares/multerConfig');
 
-// GET: ملف البروفايل
 router.get('/user-profile', authenticateToken, profileController.getProfile);
-
-// PUT: تحديث بيانات البروفايل
 router.put('/update-profile', authenticateToken, profileController.updateProfile);
-
-// POST: تحميل صورة البروفايل
 router.post('/profile-picture', authenticateToken, upload.single('profileImage'), profileController.uploadProfilePicture);
 
 module.exports = router;

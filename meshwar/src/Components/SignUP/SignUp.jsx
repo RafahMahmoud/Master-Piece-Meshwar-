@@ -463,10 +463,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import Swal from "sweetalert2";
-import { FaMapMarkerAlt } from "react-icons/fa"; 
 import route from '../../assets/z-TrhLCn1abMU-unsplash.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser, resetError } from '../../store/slices/authSlice';
@@ -478,9 +475,8 @@ const SignUp = () => {
     const [registerConfirmPassword, setRegisterConfirmPassword] = useState("");
     const [registerGender, setRegisterGender] = useState("");
     const [registerBirthday, setRegisterBirthday] = useState("");
-    const [registerPhone, setRegisterPhone] = useState("");
-    const [registerHaveACar, setRegisterHaveACar] = useState("");
-    const [registerLivesAt, setRegisterLivesAt] = useState("");
+
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { error, loading } = useSelector((state) => state.auth);
@@ -488,10 +484,10 @@ const SignUp = () => {
 
     const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const validatePassword = password => /^(?=.*[A-Za-z]).{6,}$/.test(password);
-    const validatePhone = phone => /^07\d{8}$/.test(phone);
+
 
     const register = async () => {
-        if (!registerName || !registerEmail || !registerPassword || !registerConfirmPassword || !registerGender || !registerBirthday || !registerPhone) {
+        if (!registerName || !registerEmail || !registerPassword || !registerConfirmPassword || !registerGender || !registerBirthday ) {
             Swal.fire("Error", "Please fill in all required fields.", "error");
             return;
         }
@@ -511,10 +507,7 @@ const SignUp = () => {
             return;
         }
 
-        if (!validatePhone(registerPhone)) {
-            Swal.fire("Error", "Phone number must be 10 digits long and start with 07", "error");
-            return;
-        }
+    
 
         const userData = {
             fullName: registerName,
@@ -522,7 +515,7 @@ const SignUp = () => {
             password: registerPassword,
             gender: registerGender,
             dateOfBirth: registerBirthday,
-            phoneNumber: registerPhone,
+
         };
 
         try {
@@ -533,21 +526,12 @@ const SignUp = () => {
                 icon: "success",
                 confirmButtonText: "OK",
             });
-            navigate("/questionair");
+            navigate("/");
         } catch (error) {
             Swal.fire("Error", error, "error");
             dispatch(resetError());
         }
     };
-
-    // const handleLocationClick = () => {
-    //     navigator.geolocation.getCurrentPosition(position => {
-    //         const { latitude, longitude } = position.coords;
-    //         setRegisterLivesAt(`Lat: ${latitude}, Lon: ${longitude}`);
-    //     }, () => {
-    //         Swal.fire("Error", "Failed to get location", "error");
-    //     });
-    // };
 
     return (
         <div
@@ -609,55 +593,14 @@ const SignUp = () => {
                         onChange={event => setRegisterBirthday(event.target.value)}
                         className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
-                    <label htmlFor="phone">Phone number</label>
-                    <input
-                        id="RgrPhone"
-                        type="tel"
-                        placeholder="Phone"
-                        value={registerPhone}
-                        onChange={event => setRegisterPhone(event.target.value)}
-                        className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                    {/* <label htmlFor="livesAt" className="flex items-center">
-                        <FaMapMarkerAlt className="mr-2 text-teal-500" /> Lives At
-                    </label>
-                    <div className="relative">
-                        <input
-                            id="RrgLivesAt"
-                            type="text"
-                            placeholder="Enter your address..."
-                            value={registerLivesAt}
-                            onChange={event => setRegisterLivesAt(event.target.value)}
-                            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        />
-                        <button
-                            type="button"
-                            onClick={handleLocationClick}
-                            className="absolute right-2 top-1/3 transform -translate-y-1/2 bg-teal-500 text-white p-2 rounded-full hover:text-white"
-                        >
-                            <FaMapMarkerAlt />
-                        </button>
-                    </div>
-                    <label className="block mb-2">Have a car</label>
-                    <div className="flex items-center mb-4">
-                        <input className="mr-2" type="radio" id="yes" name="car" value="yes" onChange={event => setRegisterHaveACar(event.target.value)} />
-                        <label htmlFor="yes">Yes</label>
-                        <input className="ml-4 mr-2" type="radio" id="no" name="car" value="no" onChange={event => setRegisterHaveACar(event.target.value)} />
-                        <label htmlFor="no">No</label>
-                    </div> */}
+              
                     <button
             onClick={register}
-            disabled={loading || !registerName || !registerEmail || !registerPassword || !registerConfirmPassword || !registerGender || !registerBirthday || !registerPhone}
-            className={`w-full py-2 ${loading || !registerName || !registerEmail || !registerPassword || !registerConfirmPassword || !registerGender || !registerBirthday || !registerPhone ? 'bg-teal-300 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-400'} text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mb-4`}
+            disabled={loading || !registerName || !registerEmail || !registerPassword || !registerConfirmPassword || !registerGender || !registerBirthday }
+            className={`w-full py-2 ${loading || !registerName || !registerEmail || !registerPassword || !registerConfirmPassword || !registerGender || !registerBirthday  ? 'bg-teal-300 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-400'} text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mb-4`}
         >
             {loading ? 'Signing Up...' : 'Sign Up'}
         </button>
-                    {/* <button
-                        onClick={() => { /* Handle Google sign up logic here */ }
-                        {/* className="w-full py-2 bg-teal-500 hover:bg-teal-400 text-white rounded-lg flex items-center justify-center mb-4">
-                        <FontAwesomeIcon icon={faGoogle} className="mr-2" />
-                        <span>Sign Up With Google</span>
-                    </button> */} 
                     <div className="mt-4 text-center">
                         <Link to="/login" className="text-teal-500 hover:underline">
                             <p>Already have an account?</p>

@@ -326,17 +326,16 @@ const User = require('../models/users');
 
 exports.signup = async (req, res) => {
   try {
-    const { fullName, email, password, gender, dateOfBirth, phoneNumber } = req.body;
+    const { fullName, email, password, gender, dateOfBirth } = req.body;
 
-    // تحقق من الحقول المطلوبة
-    if (!fullName || !email || !password || !gender || !dateOfBirth || !phoneNumber) {
+   
+    if (!fullName || !email || !password || !gender || !dateOfBirth ) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ fullName, email, password: hashedPassword, gender, dateOfBirth, phoneNumber });
+    const newUser = new User({ fullName, email, password: hashedPassword, gender, dateOfBirth });
 
-    // محاولة حفظ المستخدم
     try {
         await newUser.save();
     } catch (saveError) {
@@ -344,14 +343,14 @@ exports.signup = async (req, res) => {
         return res.status(500).json({ message: 'Error saving user', error: saveError.message });
     }
 
-    // إنشاء JWT
+
     const tokenPayload = { 
         id: newUser._id,
         email: newUser.email 
     };
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // تعيين ملف تعريف الارتباط
+
     res.cookie('UserToken', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -372,31 +371,27 @@ exports.login = async (req, res) => {
   try {
       const { email, password } = req.body;
 
-      // Find user by email
       const user = await User.findOne({ email });
       if (!user) {
           return res.status(404).json({ message: 'User not found' });
       }
 
-      // Check password
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
           return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      // Create JWT token
       const tokenPayload = { 
           id: user._id, 
           email: user.email 
       };
       const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-      // Set token as HTTP-only cookie
       res.cookie('UserToken', token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-          sameSite: 'strict', // Protect against CSRF
-          maxAge: 3600000 // 1 hour
+          secure: process.env.NODE_ENV === 'production', 
+          sameSite: 'strict', 
+          maxAge: 3600000 
       });
 
       // Send response
@@ -428,8 +423,17 @@ exports.checkAuthStatus = (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.json({ isAuthenticated: true, user: { id: decoded.id, email: decoded.email } });
+    res.json({ isAuthenticated: true, user: { id: decoded.id, email: decoded.email, profileImage: decoded.profilePic } });
   } catch (error) {
     res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
