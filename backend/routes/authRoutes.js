@@ -9,7 +9,8 @@ router.post('/logout', authController.logout);
 router.get('/status', authenticateToken, authController.checkAuthStatus);
 router.get('/check-status', authenticateToken , (req, res) => {res.status(200).json({ message: 'User is logged in' });});
 router.get('/me', authenticateToken, authController.getMe);
-
+router.get('/users',  authController.getAllUsers);
+router.patch('/users/:userId/status', authController.toggleUserStatus);
 module.exports = router
 
 

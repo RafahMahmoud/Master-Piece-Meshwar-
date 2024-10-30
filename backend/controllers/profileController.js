@@ -38,42 +38,6 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-// تحميل صورة البروفايل
-// exports.uploadProfilePicture = async (req, res) => {
-//   try {
-//     const userId = req.user.id;
-//     const user = await User.findByIdAndUpdate(
-//       userId,
-//       { profilePic: req.file.path },
-//       { new: true }
-      
-//     );
-//     console.log(req.file); // تأكد من أن `file` يحتوي على بيانات الصورة
-
-//     res.json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error uploading image' });
-//   }
-// };
-// exports.uploadProfilePicture = async (req, res) => {
-//   try {
-//     const userId = req.user.id;
-//     const user = await User.findByIdAndUpdate(
-//       userId,
-//       { profilePic: req.file.path },
-//       { new: true }
-//     );
-
-//     if (!user) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-    
-//     console.log("Updated profile picture:", user.profilePic); // التأكد من حفظ الصورة
-//     res.json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error uploading image' });
-//   }
-// };
 exports.uploadProfilePicture = async (req, res) => {
   try {
     const userId = req.user.id;

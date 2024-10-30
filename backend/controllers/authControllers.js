@@ -437,3 +437,81 @@ exports.getMe = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    // Get query parameters for pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Get query parameters for sorting
+    const sortField = req.query.sortField || 'createdAt';
+    const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+    const sortOptions = {};
+    sortOptions[sortField] = sortOrder;
+
+    // Get query parameters for filtering
+    const filterOptions = {};
+    if (req.query.gender) {
+      filterOptions.gender = req.query.gender;
+    }
+    if (req.query.search) {
+      filterOptions.$or = [
+        { fullName: { $regex: req.query.search, $options: 'i' } },
+        { email: { $regex: req.query.search, $options: 'i' } }
+      ];
+    }
+
+    // Get users with pagination and excluding password
+    const users = await User
+      .find(filterOptions)
+      .select('-password')
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit);
+
+    // Get total count for pagination
+    const total = await User.countDocuments(filterOptions);
+
+    res.json({
+      users,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalUsers: total,
+        hasMore: page * limit < total
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ message: 'Error fetching users', error: error.message });
+  }
+};
+
+
+
+exports.toggleUserStatus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { isActive } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { isActive },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      message: `User ${isActive ? 'activated' : 'deactivated'} successfully`,
+      user
+    });
+  } catch (error) {
+    console.error('Error toggling user status:', error);
+    res.status(500).json({ message: 'Error updating user status', error: error.message });
+  }
+};

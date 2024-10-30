@@ -60,10 +60,6 @@
 
 
 
-
-
-
-
 const mongoose = require('mongoose');
 
 const outingPlanSchema = new mongoose.Schema({

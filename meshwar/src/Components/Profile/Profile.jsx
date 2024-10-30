@@ -223,13 +223,12 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { Search, Bell } from 'lucide-react';
 import NavBar from '../NavBar/NavBar';
 import Footer from '../Footer/Footer';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import StepperPopup from '../stepper/stepper';
-
+import PreviousOutingsTab from './PreviousOutingsTab';
 const SocialMediaProfile = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [userData, setUserData] = useState(null);
@@ -243,11 +242,12 @@ const SocialMediaProfile = () => {
   });
   const [profileImage, setProfileImage] = useState(null); // حالة لتخزين رابط الصورة
   const navigate = useNavigate();
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   useEffect(() => {
     fetchUserData();
   }, []);
+
 
   const fetchUserData = async () => {
     try {
@@ -388,7 +388,6 @@ const SocialMediaProfile = () => {
                 <div className="space-y-4">
                   <p><strong>Full Name:</strong> {userData?.fullName}</p>
                   <p><strong>Email:</strong> {userData?.email}</p>
-                  {/* <p><strong>Phone Number:</strong> {userData?.phoneNumber}</p> */}
                   <p><strong>Date of Birth:</strong> {userData?.dateOfBirth.split('T')[0]}</p>
 
                   <p><strong>Gender:</strong> {userData?.gender}</p>
@@ -439,21 +438,30 @@ const SocialMediaProfile = () => {
               >
                 Profile
               </button>
+              <button
+  className={`w-full py-2 px-4 text-left rounded-md hover:bg-[#F9E1FF] transition duration-300 ${activeTab === 'previousOutings' ? 'bg-[#F9E1FF]' : ''}`}
+  onClick={() => setActiveTab('previousOutings')}
+>
+  Previous Outings
+</button>
             </nav>
           </div>
         </div>
 
         <div className="flex-1 bg-white rounded-lg shadow p-6">
-          <div className="mb-6 flex justify-between items-center">
-            <div className="relative">
-              <input type="text" placeholder="Search" className="pl-10 pr-4 py-2 border rounded-md" />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-            </div>
-            <Bell className="text-gray-500" />
-          </div>
+       <div className="mb-6 flex justify-end items-center">
+    
+             <button
+                className="bg-[#F9E1FF] px-4 py-2 rounded-md hover:bg-[#fcf2ff] transition duration-300 mt-4"
+                onClick={() => setIsPopupOpen(true)}
+              >
+                Plan New Outing
+              </button>
+          </div> 
           {renderContent()}
         </div>
       </div>
+      <StepperPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
       <Footer />
     </div>
   );

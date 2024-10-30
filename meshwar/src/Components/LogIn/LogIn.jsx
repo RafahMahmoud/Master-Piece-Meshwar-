@@ -132,8 +132,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import route from '../../assets/z-TrhLCn1abMU-unsplash.jpg';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, resetError } from '../../store/slices/authSlice';
 
@@ -201,18 +200,10 @@ const LogIn = () => {
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>
-        <button
-          className="w-full py-2 bg-teal-500 hover:bg-teal-400 text-white rounded-lg flex items-center justify-center mb-4"
-        >
-          <FontAwesomeIcon icon={faGoogle} className="mr-2" />
-          <span>Sign In With Google</span>
-        </button>
+      
         <div className="mt-4 text-center">
           <Link to="/SignUp" className="text-teal-500 hover:underline">
             <p>Don't have an account yet?</p>
-          </Link>
-          <Link to="/resetPassword" className="text-teal-500 hover:underline">
-            <p>Forgot Password?</p>
           </Link>
         </div>
       </div>

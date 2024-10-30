@@ -1,378 +1,4 @@
 // import React, { useEffect, useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchPosts, createPost } from '../../store/slices/postSlice';
-// import { Heart, MessageCircle, Share2, Send } from 'lucide-react';
-
-// const Community = () => {
-//   const dispatch = useDispatch();
-//   const { posts, loading } = useSelector((state) => state.posts);
-//   const { user, isAuthenticated } = useSelector((state) => state.auth);
-//   const [newPostContent, setNewPostContent] = useState('');
-
-//   useEffect(() => {
-//     dispatch(fetchPosts());
-//   }, [dispatch]);
-
-//   const handleSubmitPost = () => {
-//     if (newPostContent.trim()) {
-//       dispatch(createPost({ content: newPostContent }));
-//       setNewPostContent('');
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 py-8">
-//       <div className="max-w-2xl mx-auto px-4">
-//         {isAuthenticated && (
-//           <div className="bg-white rounded-lg shadow p-6 mb-8">
-//             <div className="flex items-start space-x-4">
-//               <img
-//                 src={user.profilePic || "/api/placeholder/40/40"}
-//                 alt="Profile"
-//                 className="w-10 h-10 rounded-full"
-//               />
-//               <div className="flex-1">
-//                 <textarea
-//                   value={newPostContent}
-//                   onChange={(e) => setNewPostContent(e.target.value)}
-//                   placeholder="What's on your mind?"
-//                   className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-//                   rows="3"
-//                 />
-//                 <button
-//                   onClick={handleSubmitPost}
-//                   className="mt-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
-//                 >
-//                   Post
-//                 </button>
-//               </div>
-//             </div>
-//           </div>
-//         )}
-
-//         {loading ? (
-//           <div className="text-center">
-//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto"></div>
-//           </div>
-//         ) : (
-//           <div className="space-y-6">
-//             {posts.map((post) => (
-//               <div key={post._id} className="bg-white rounded-lg shadow">
-//                 <div className="p-4">
-//                   <div className="flex items-center space-x-3 mb-4">
-//                     <img
-//                       src={post.user.profilePic || "/api/placeholder/40/40"}
-//                       alt={post.user.fullName}
-//                       className="w-10 h-10 rounded-full"
-//                     />
-//                     <div>
-//                       <h3 className="font-semibold">{post.user.fullName}</h3>
-//                       <p className="text-sm text-gray-500">
-//                         {new Date(post.createdAt).toLocaleDateString()}
-//                       </p>
-//                     </div>
-//                   </div>
-                  
-//                   <p className="text-gray-800 mb-4">{post.content}</p>
-                  
-//                   {post.image && (
-//                     <img
-//                       src={post.image}
-//                       alt="Post content"
-//                       className="rounded-lg mb-4 w-full"
-//                     />
-//                   )}
-                  
-//                   <div className="flex items-center justify-between pt-4 border-t">
-//                     <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors">
-//                       <Heart className={`h-5 w-5 ${post.likes.includes(user?.id) ? 'fill-red-500 text-red-500' : ''}`} />
-//                       <span>{post.likes.length}</span>
-//                     </button>
-                    
-//                     <button className="flex items-center space-x-2 text-gray-500 hover:text-teal-500 transition-colors">
-//                       <MessageCircle className="h-5 w-5" />
-//                       <span>{post.comments.length}</span>
-//                     </button>
-                    
-//                     <button className="flex items-center space-x-2 text-gray-500 hover:text-teal-500 transition-colors">
-//                       <Share2 className="h-5 w-5" />
-//                       <span>{post.shares}</span>
-//                     </button>
-//                   </div>
-//                 </div>
-
-//                 {post.comments.length > 0 && (
-//                   <div className="bg-gray-50 p-4 border-t">
-//                     {post.comments.map((comment) => (
-//                       <div key={comment._id} className="mb-4">
-//                         <div className="flex items-start space-x-3">
-//                           <img
-//                             src={comment.user.profilePic || "/api/placeholder/32/32"}
-//                             alt={comment.user.fullName}
-//                             className="w-8 h-8 rounded-full"
-//                           />
-//                           <div className="flex-1">
-//                             <div className="bg-gray-100 rounded-lg p-3">
-//                               <h4 className="font-semibold">{comment.user.fullName}</h4>
-//                               <p className="text-gray-800">{comment.content}</p>
-//                             </div>
-//                             <div className="mt-2 ml-2 text-sm text-gray-500">
-//                               <button className="hover:text-teal-500">Reply</button>
-//                               <span className="mx-2">·</span>
-//                               <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-//                             </div>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-
-//                 {isAuthenticated && (
-//                   <div className="p-4 border-t">
-//                     <div className="flex items-center space-x-3">
-//                       <img
-//                         src={user.profilePic || "/api/placeholder/32/32"}
-//                         alt="Your profile"
-//                         className="w-8 h-8 rounded-full"
-//                       />
-//                       <div className="flex-1 flex items-center space-x-2">
-//                         <input
-//                           type="text"
-//                           placeholder="Write a comment..."
-//                           className="flex-1 p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-//                         />
-//                         <button className="p-2 text-teal-500 hover:bg-teal-50 rounded-full transition-colors">
-//                           <Send className="h-5 w-5" />
-//                         </button>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 )}
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Community;
-
-
-
-
-
-
-
-
-// import React, { useEffect, useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchPosts, createPost, likePost, addComment } from '../../store/slices/postSlice';
-// import { Heart, MessageCircle, Share2, Send } from 'lucide-react';
-
-// const Community = () => {
-//   const dispatch = useDispatch();
-//   const { posts, loading } = useSelector((state) => state.posts);
-//   const { user, isAuthenticated } = useSelector((state) => state.auth);
-//   const [newPostContent, setNewPostContent] = useState('');
-//   const [commentContent, setCommentContent] = useState('');
-
-//   // Fetch all posts when the component mounts
-//   useEffect(() => {
-//     dispatch(fetchPosts());
-//   }, [dispatch]);
-
-//   // Function to handle new post submission
-//   const handleSubmitPost = () => {
-//     if (newPostContent.trim()) {
-//       dispatch(createPost({ content: newPostContent }));
-//       setNewPostContent('');
-//     }
-//   };
-
-//   // Function to handle liking a post
-//   const handleLikePost = (postId) => {
-//     dispatch(likePost(postId));
-//   };
-
-//   // Function to handle adding a comment to a post
-//   const handleAddComment = (postId) => {
-//     if (commentContent.trim()) {
-//       dispatch(addComment({ postId, content: commentContent }));
-//       setCommentContent('');
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 py-8">
-//       <div className="max-w-2xl mx-auto px-4">
-        
-//         {/* New post form */}
-//         {isAuthenticated && (
-//           <div className="bg-white rounded-lg shadow p-6 mb-8">
-//             <div className="flex items-start space-x-4">
-//               <img
-//                 src={user.profilePic || "/api/placeholder/40/40"}
-//                 alt="Profile"
-//                 className="w-10 h-10 rounded-full"
-//               />
-//               <div className="flex-1">
-//                 <textarea
-//                   value={newPostContent}
-//                   onChange={(e) => setNewPostContent(e.target.value)}
-//                   placeholder="What's on your mind?"
-//                   className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-//                   rows="3"
-//                 />
-//                 <button
-//                   onClick={handleSubmitPost}
-//                   className="mt-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
-//                 >
-//                   Post
-//                 </button>
-//               </div>
-//             </div>
-//           </div>
-//         )}
-
-//         {/* Loading spinner */}
-//         {loading ? (
-//           <div className="text-center">
-//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto"></div>
-//           </div>
-//         ) : (
-//           <div className="space-y-6">
-            
-//             {/* Render each post */}
-//             {posts.map((post) => (
-//               <div key={post._id} className="bg-white rounded-lg shadow">
-//                 <div className="p-4">
-                  
-//                   {/* Post Header */}
-//                   <div className="flex items-center space-x-3 mb-4">
-//                     <img
-//                       src={post.user.profilePic || "/api/placeholder/40/40"}
-//                       alt={post.user.fullName}
-//                       className="w-10 h-10 rounded-full"
-//                     />
-//                     <div>
-//                       <h3 className="font-semibold">{post.user.fullName}</h3>
-//                       <p className="text-sm text-gray-500">
-//                         {new Date(post.createdAt).toLocaleDateString()}
-//                       </p>
-//                     </div>
-//                   </div>
-                  
-//                   {/* Post Content */}
-//                   <p className="text-gray-800 mb-4">{post.content}</p>
-                  
-//                   {/* Post Image */}
-//                   {post.image && (
-//                     <img
-//                       src={post.image}
-//                       alt="Post content"
-//                       className="rounded-lg mb-4 w-full"
-//                     />
-//                   )}
-                  
-//                   {/* Post Actions */}
-//                   <div className="flex items-center justify-between pt-4 border-t">
-//                     {/* Like Button */}
-//                     <button 
-//                       onClick={() => handleLikePost(post._id)}
-//                       className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors"
-//                     >
-//                       <Heart className={`h-5 w-5 ${post.likes.includes(user?.id) ? 'fill-red-500 text-red-500' : ''}`} />
-//                       <span>{post.likes.length}</span>
-//                     </button>
-                    
-//                     {/* Comment Button */}
-//                     <button className="flex items-center space-x-2 text-gray-500 hover:text-teal-500 transition-colors">
-//                       <MessageCircle className="h-5 w-5" />
-//                       <span>{post.comments.length}</span>
-//                     </button>
-                    
-//                     {/* Share Button */}
-//                     <button className="flex items-center space-x-2 text-gray-500 hover:text-teal-500 transition-colors">
-//                       <Share2 className="h-5 w-5" />
-//                       <span>{post.shares}</span>
-//                     </button>
-//                   </div>
-//                 </div>
-
-//                 {/* Render Comments */}
-//                 {post.comments.length > 0 && (
-//                   <div className="bg-gray-50 p-4 border-t">
-//                     {post.comments.map((comment) => (
-//                       <div key={comment._id} className="mb-4">
-//                         <div className="flex items-start space-x-3">
-//                           <img
-//                             src={comment.user.profilePic || "/api/placeholder/32/32"}
-//                             alt={comment.user.fullName}
-//                             className="w-8 h-8 rounded-full"
-//                           />
-//                           <div className="flex-1">
-//                             <div className="bg-gray-100 rounded-lg p-3">
-//                               <h4 className="font-semibold">{comment.user.fullName}</h4>
-//                               <p className="text-gray-800">{comment.content}</p>
-//                             </div>
-//                             <div className="mt-2 ml-2 text-sm text-gray-500">
-//                               <button className="hover:text-teal-500">Reply</button>
-//                               <span className="mx-2">·</span>
-//                               <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-//                             </div>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-
-//                 {/* Add Comment Form */}
-//                 {isAuthenticated && (
-//                   <div className="p-4 border-t">
-//                     <div className="flex items-center space-x-3">
-//                       <img
-//                         src={user.profilePic || "/api/placeholder/32/32"}
-//                         alt="Your profile"
-//                         className="w-8 h-8 rounded-full"
-//                       />
-//                       <div className="flex-1 flex items-center space-x-2">
-//                         <input
-//                           type="text"
-//                           value={commentContent}
-//                           onChange={(e) => setCommentContent(e.target.value)}
-//                           placeholder="Write a comment..."
-//                           className="flex-1 p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-//                         />
-//                         <button
-//                           onClick={() => handleAddComment(post._id)}
-//                           className="p-2 text-teal-500 hover:bg-teal-50 rounded-full transition-colors"
-//                         >
-//                           <Send className="h-5 w-5" />
-//                         </button>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 )}
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Community;
-
-
-
-
-
-// import React, { useEffect, useState } from 'react';
 // import axiosInstance from '../../axiosConfig';
 // import NavBar from '../NavBar/NavBar';
 // import Footer from '../Footer/Footer';
@@ -696,7 +322,65 @@ import {
   TwitterIcon,
   WhatsappIcon,
 } from 'react-share';
+import { MoreVertical, Edit2, Trash2 } from 'lucide-react';
 
+// Add these new components at the top of your Community component
+const OptionsDropdown = ({ isOpen, onEdit, onDelete, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="absolute right-0 mt-1 w-36 bg-white rounded-md shadow-lg z-10 border">
+      <div className="py-1">
+        <button
+          onClick={onEdit}
+          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
+        >
+          <Edit2 className="h-4 w-4 mr-2" />
+          Edit
+        </button>
+        <button
+          onClick={onDelete}
+          className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full"
+        >
+          <Trash2 className="h-4 w-4 mr-2" />
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const EditModal = ({ content, onSave, onClose }) => {
+  const [editedContent, setEditedContent] = useState(content);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-96">
+        <h3 className="text-lg font-semibold mb-4">Edit Content</h3>
+        <textarea
+          value={editedContent}
+          onChange={(e) => setEditedContent(e.target.value)}
+          className="w-full p-2 border rounded-md mb-4"
+          rows="4"
+        />
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSave(editedContent)}
+            className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 const Community = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -708,6 +392,8 @@ const Community = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [showReplyBox, setShowReplyBox] = useState({});
   const [replyContent, setReplyContent] = useState({});
+  const [showOptions, setShowOptions] = useState({ type: null, id: null });
+  const [showEditModal, setShowEditModal] = useState({ type: null, id: null, content: '' });
   const imageInputRef = useRef(null);
 
   useEffect(() => {
@@ -736,6 +422,134 @@ const Community = () => {
     } finally {
       setLoading(false);
     }
+  };
+  const handleEdit = async (type, id, content) => {
+    setShowEditModal({ type, id, content });
+    setShowOptions({ type: null, id: null });
+  };
+
+  const handleDelete = async (type, id, postId = null, commentId = null) => {
+    try {
+      let endpoint = '';
+      if (type === 'post') {
+        endpoint = `/posts/${id}`;
+      } else if (type === 'comment') {
+        endpoint = `/posts/${postId}/comments/${id}`;
+      } else if (type === 'reply') {
+        endpoint = `/posts/${postId}/comments/${commentId}/replies/${id}`;
+      }
+
+      await axiosInstance.delete(endpoint);
+      
+      // Update UI based on deletion
+      if (type === 'post') {
+        setPosts(posts.filter(post => post._id !== id));
+      } else if (type === 'comment') {
+        setPosts(posts.map(post => {
+          if (post._id === postId) {
+            return {
+              ...post,
+              comments: post.comments.filter(comment => comment._id !== id)
+            };
+          }
+          return post;
+        }));
+      } else if (type === 'reply') {
+        setPosts(posts.map(post => {
+          if (post._id === postId) {
+            return {
+              ...post,
+              comments: post.comments.map(comment => {
+                if (comment._id === commentId) {
+                  return {
+                    ...comment,
+                    replies: comment.replies.filter(reply => reply._id !== id)
+                  };
+                }
+                return comment;
+              })
+            };
+          }
+          return post;
+        }));
+      }
+    } catch (error) {
+      console.error('Error deleting content:', error);
+    }
+    setShowOptions({ type: null, id: null });
+  };
+
+  const handleSaveEdit = async (newContent) => {
+    try {
+      const { type, id } = showEditModal;
+      let endpoint = '';
+      let postId = null;
+      let commentId = null;
+
+      if (type === 'post') {
+        endpoint = `/posts/${id}`;
+        postId = id;
+      } else if (type === 'comment') {
+        const post = posts.find(p => p.comments.some(c => c._id === id));
+        endpoint = `/posts/${post._id}/comments/${id}`;
+        postId = post._id;
+        commentId = id;
+      } else if (type === 'reply') {
+        const post = posts.find(p => 
+          p.comments.some(c => c.replies.some(r => r._id === id))
+        );
+        const comment = post.comments.find(c => 
+          c.replies.some(r => r._id === id)
+        );
+        endpoint = `/posts/${post._id}/comments/${comment._id}/replies/${id}`;
+        postId = post._id;
+        commentId = comment._id;
+      }
+
+      const response = await axiosInstance.put(endpoint, { content: newContent });
+
+      // Update UI based on edit
+      if (type === 'post') {
+        setPosts(posts.map(post => 
+          post._id === id ? { ...post, content: newContent } : post
+        ));
+      } else if (type === 'comment') {
+        setPosts(posts.map(post => {
+          if (post._id === postId) {
+            return {
+              ...post,
+              comments: post.comments.map(comment =>
+                comment._id === id ? { ...comment, content: newContent } : comment
+              )
+            };
+          }
+          return post;
+        }));
+      } else if (type === 'reply') {
+        setPosts(posts.map(post => {
+          if (post._id === postId) {
+            return {
+              ...post,
+              comments: post.comments.map(comment => {
+                if (comment._id === commentId) {
+                  return {
+                    ...comment,
+                    replies: comment.replies.map(reply =>
+                      reply._id === id ? { ...reply, content: newContent } : reply
+                    )
+                  };
+                }
+                return comment;
+              })
+            };
+          }
+          return post;
+        }));
+      }
+    } catch (error) {
+      console.error('Error updating content:', error);
+    }
+    setShowEditModal({ type: null, id: null, content: '' });
   };
 
   const handleImageUpload = (e) => {
@@ -958,8 +772,8 @@ const Community = () => {
             {posts.map((post) => (
               <div key={post._id} className="bg-white rounded-lg shadow">
                 <div className="p-4">
-                  <div className="flex items-center space-x-3 mb-4">
-            
+                  <div className="flex justify-between items-center space-x-3 mb-4">
+                    <div className='flex gap-4'>
                     <img
                     
                       src={`http://localhost:3003/${post.user.profilePic}`} 
@@ -972,6 +786,23 @@ const Community = () => {
                         {new Date(post.createdAt).toLocaleDateString()}
                       </p>
                     </div>
+                    </div>
+                    {currentUser && currentUser._id === post.user._id && (
+      <div className="relative">
+        <button
+          onClick={() => setShowOptions({ type: 'post', id: post._id })}
+          className="p-1 hover:bg-gray-100 rounded-full"
+        >
+          <MoreVertical className="h-5 w-5 text-gray-500" />
+        </button>
+        <OptionsDropdown
+          isOpen={showOptions.type === 'post' && showOptions.id === post._id}
+          onEdit={() => handleEdit('post', post._id, post.content)}
+          onDelete={() => handleDelete('post', post._id)}
+          onClose={() => setShowOptions({ type: null, id: null })}
+        />
+      </div>
+    )}
                   </div>
                   
                   <p className="text-gray-800 mb-4">{post.content}</p>
@@ -1009,7 +840,7 @@ const Community = () => {
                     <button 
                        onClick={() => {
                          setShowShareModal(post._id);
-                         handleSharePost(post._id); // Call to update share count
+                         handleSharePost(post._id); 
                       }}
                       className="flex items-center space-x-2 text-gray-500 hover:text-teal-500 transition-colors"
                     >
@@ -1034,7 +865,25 @@ const Community = () => {
                               />
                               <div className="flex-1">
                                 <div className="bg-gray-100 rounded-lg p-3">
+                                <div className='flex justify-between'>
                                   <h4 className="font-semibold">{comment.user.fullName}</h4>
+                                  {currentUser && currentUser._id === comment.user._id && (
+            <div className="relative">
+               <button
+                onClick={() => setShowOptions({ type: 'comment', id: comment._id })}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <MoreVertical className="h-4 w-4 text-gray-500" />
+              </button>
+              <OptionsDropdown
+                isOpen={showOptions.type === 'comment' && showOptions.id === comment._id}
+                onEdit={() => handleEdit('comment', comment._id, comment.content)}
+                onDelete={() => handleDelete('comment', comment._id, post._id)}
+                onClose={() => setShowOptions({ type: null, id: null })}
+              />
+            </div>
+          )}
+          </div>
                                   <p className="text-gray-800">{comment.content}</p>
                                 </div>
                                 <div className="mt-2 ml-2 flex items-center space-x-4 text-sm text-gray-500">
@@ -1060,7 +909,25 @@ const Community = () => {
                                         />
                                         <div className="flex-1">
                                           <div className="bg-gray-100 rounded-lg p-2">
+                                            <div className='flex justify-between'>
                                             <h5 className="font-semibold text-sm">{reply.user.fullName}</h5>
+                                            {currentUser && currentUser._id === reply.user._id && (
+            <div className="relative">
+              <button
+                onClick={() => setShowOptions({ type: 'reply', id: reply._id })}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <MoreVertical className="h-4 w-4 text-gray-500" />
+              </button>
+              <OptionsDropdown
+                isOpen={showOptions.type === 'reply' && showOptions.id === reply._id}
+                onEdit={() => handleEdit('reply', reply._id, reply.content)}
+                onDelete={() => handleDelete('reply', reply._id, post._id, comment._id)}
+                onClose={() => setShowOptions({ type: null, id: null })}
+              />
+            </div>
+          )}
+          </div>
                                             <p className="text-sm text-gray-800">{reply.content}</p>
                                           </div>
                                           <span className="text-xs text-gray-500 ml-2">
@@ -1117,7 +984,6 @@ const Community = () => {
                           />
                           <div className="flex-1 flex items-center space-x-2">
                             <input
-                              // Frontend - Community.jsx (continued)
                               type="text"
                               value={commentContent[post._id] || ''}
                               onChange={(e) => setCommentContent(prev => ({
@@ -1150,6 +1016,13 @@ const Community = () => {
             onClose={() => setShowShareModal(null)}
           />
         )}
+         {showEditModal.type && (
+    <EditModal
+      content={showEditModal.content}
+      onSave={handleSaveEdit}
+      onClose={() => setShowEditModal({ type: null, id: null, content: '' })}
+    />
+  )}
       </div>
       <Footer/>
     </div>
@@ -1157,3 +1030,12 @@ const Community = () => {
 };
 
 export default Community;
+
+
+
+
+
+
+
+
+
