@@ -2,8 +2,27 @@ const Partner = require('../models/partners');
 
 exports.getAllPartners = async (req, res) => {
   try {
-    const partners = await Partner.find();
-    res.json(partners);
+    const page = parseInt(req.query.page) || 1;
+    const limit = 4; // 4 partners per page
+    const skip = (page - 1) * limit;
+
+    const totalPartners = await Partner.countDocuments();
+    const totalPages = Math.ceil(totalPartners / limit);
+
+    const partners = await Partner.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.json({
+      partners,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalPartners,
+        partnersPerPage: limit
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -116,6 +135,34 @@ exports.uploadPartnerLogo = async (req, res) => {
   } catch (error) {
     console.error('Error uploading image:', error);
     res.status(500).json({ message: 'Error uploading image', error: error.message });
+  }
+};
+
+
+
+exports.updateCompanyDetails = async (req, res) => {
+  try {
+    const { companyName, businessEmail, phoneNumber, city, details } = req.body;
+    
+    const partner = await Partner.findByIdAndUpdate(
+      req.params.id,
+      {
+        companyName,
+        businessEmail,
+        phoneNumber,
+        city,
+        details
+      },
+      { new: true }
+    );
+
+    if (!partner) {
+      return res.status(404).json({ message: 'Partner not found' });
+    }
+
+    res.json(partner);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

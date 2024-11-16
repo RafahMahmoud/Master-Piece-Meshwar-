@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PartnerDetailsModal from '../PartnerDetailsModal/PartnerDetailsModal';
-import { CalendarDays, Clock, DollarSign, Users } from 'lucide-react';
+import CompanyDetailsModal from './CompanyDetailsModal';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('partners');
@@ -15,22 +15,56 @@ export default function Dashboard() {
   const [userCurrentPage, setUserCurrentPage] = useState(1);
   const [limit] = useState(10); // Number of users per page
   const [logoImage, setLogoImage] = useState(null);
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
+  const [selectedPartnerForEdit, setSelectedPartnerForEdit] = useState(null);
+  const [partnerCurrentPage, setPartnerCurrentPage] = useState(1);
+  const [partnerTotalPages, setPartnerTotalPages] = useState(1);
+
   useEffect(() => {
-    fetchPartners();
+
     fetchOutingPlans();
     fetchUsers(userCurrentPage);
   }, [userCurrentPage]);
-
+  useEffect(() => {
+    fetchPartners();
+  }, [partnerCurrentPage]);
 
   const fetchPartners = async () => {
     try {
-      const response = await axios.get('http://localhost:3003/api/partners');
-      setPartners(response.data);
-      setLogoImage(response.data.logoPic);
+      const response = await axios.get(`http://localhost:3003/api/partners?page=${partnerCurrentPage}`);
+      setPartners(response.data.partners);
+      setPartnerTotalPages(response.data.pagination.totalPages);
     } catch (error) {
       console.error('Error fetching partners:', error);
     }
   };
+
+  const handleEditCompanyDetails = (partner) => {
+    console.log('Opening modal with partner:', partner);
+    setSelectedPartnerForEdit(partner);
+    setIsCompanyModalOpen(true);
+  };
+
+  const handleSaveCompanyDetails = async (details) => {
+    try {
+      console.log('Selected Partner ID:', selectedPartnerForEdit._id);
+      console.log('Details being sent:', details);
+      
+      const response = await axios.patch(
+        `http://localhost:3003/api/partners/${selectedPartnerForEdit._id}/company-details`, 
+        details
+      );
+      
+      console.log('Response:', response.data);
+      setIsCompanyModalOpen(false);
+      fetchPartners();
+    } catch (error) {
+      console.error('Error updating company details:', error.response || error);
+      // Add a user-friendly error message
+      alert('Failed to update company details. Please try again.');
+    }
+  };
+
 
   const handleImageUpload = async (event, partnerId) => {
     const file = event.target.files[0];
@@ -175,23 +209,80 @@ export default function Dashboard() {
                   <td className="border px-4 py-2">{partner.isAccepted ? 'Accepted' : 'Rejected'}</td>
                   <td className="border px-4 py-2">{getBusinessTypeDetails(partner)}</td>
                   <td className="border px-4 py-2">
-                    <button
-                      onClick={() => handleAcceptReject(partner)}
-                      className={`${partner.isAccepted ? 'bg-red-500' : 'bg-green-500'} text-white px-2 py-1 rounded mr-2`}
-                    >
-                      {partner.isAccepted ? 'Reject' : 'Accept'}
-                    </button>
-                    <button
-                      onClick={() => handleAddDetails(partner)}
-                      className="bg-blue-500 text-white px-2 py-1 rounded ml-2"
-                    >
-                      {partner.businessType ? 'Edit Details' : 'Add Details'}
-                    </button>
-                  </td>
+    <button
+      onClick={() => handleAcceptReject(partner)}
+      className={`${partner.isAccepted ? 'bg-red-500' : 'bg-green-500'} text-white px-2 py-1 rounded mr-2`}
+    >
+      {partner.isAccepted ? 'Reject' : 'Accept'}
+    </button>
+    <button
+      onClick={() => handleAddDetails(partner)}
+      className="bg-blue-500 text-white px-2 py-1 rounded mx-1"
+    >
+      {partner.businessType ? 'Edit Details' : 'Add Details'}
+    </button>
+    <button
+      onClick={() => handleEditCompanyDetails(partner)}
+      className="bg-yellow-500 text-white px-2 py-1 rounded ml-1"
+    >
+      Edit Company
+    </button>
+  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+
+  {/* Add pagination controls for partners */}
+  {activeTab === 'partners' && (
+    <div className="mt-4 flex justify-center space-x-2">
+      <button
+        onClick={() => setPartnerCurrentPage(prev => Math.max(prev - 1, 1))}
+        disabled={partnerCurrentPage === 1}
+        className={`px-3 py-1 rounded ${
+          partnerCurrentPage === 1
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        }`}
+      >
+        Previous
+      </button>
+      
+      {[...Array(partnerTotalPages)].map((_, index) => (
+        <button
+          key={index + 1}
+          onClick={() => setPartnerCurrentPage(index + 1)}
+          className={`px-3 py-1 rounded ${
+            partnerCurrentPage === index + 1
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          {index + 1}
+        </button>
+      ))}
+      
+      <button
+        onClick={() => setPartnerCurrentPage(prev => Math.min(prev + 1, partnerTotalPages))}
+        disabled={partnerCurrentPage === partnerTotalPages}
+        className={`px-3 py-1 rounded ${
+          partnerCurrentPage === partnerTotalPages
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        }`}
+      >
+        Next
+      </button>
+    </div>
+  )}
+
+  {/* Add the CompanyDetailsModal */}
+  <CompanyDetailsModal
+    isOpen={isCompanyModalOpen}
+    onClose={() => setIsCompanyModalOpen(false)}
+    partner={selectedPartnerForEdit}
+    onSave={handleSaveCompanyDetails}
+  />
           <PartnerDetailsModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
@@ -200,10 +291,6 @@ export default function Dashboard() {
           />
         </div>
       )}
-
-      {/* Outing Plans Tab Content */}
-      {/* Outing Plans Tab Content */}
-{/* Outing Plans Tab Content */}
 {/* Outing Plans Tab Content */}
 {activeTab === 'outingPlans' && (
   <div className="p-6">

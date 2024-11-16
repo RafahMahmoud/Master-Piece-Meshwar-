@@ -8,6 +8,7 @@ router.get('/', partnerController.getAllPartners);
 router.post('/', partnerController.createPartner);
 router.patch('/:id', partnerController.updatePartner);
 router.post('/partner-logo',upload.single('logoPic'), partnerController.uploadPartnerLogo);
+router.patch('/:id/company-details', partnerController.updateCompanyDetails);
 module.exports = router;
 
 
