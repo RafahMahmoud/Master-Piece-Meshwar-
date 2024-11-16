@@ -13,13 +13,13 @@ const postRoutes = require('./routes/postRoutes');
 const partnerRoutes = require('./routes/partnersRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const profileRoutes = require('./routes/profileRoutes');
-const partRoutes = require('./routes/outingPlan');
+const planRoutes = require('./routes/outingPlan');
+const reviewRoutes = require('./routes/reviewRoutes')
 
-// اتصال بقاعدة البيانات
 const connectDB = require('./config/db');
 connectDB();
 
-// إعدادات الوسطى
+// middlewares
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
@@ -54,10 +54,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/info", profileRoutes);
 app.use('/api', requestRoutes);
 app.use('/api/partners', partnerRoutes);
-app.use('/api/outing', partRoutes);
+app.use('/api/outing', planRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/reviews',reviewRoutes)
 
-// تشغيل الخادم
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

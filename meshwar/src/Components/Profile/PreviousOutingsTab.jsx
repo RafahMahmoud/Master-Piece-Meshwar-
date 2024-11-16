@@ -8,7 +8,7 @@ const ReviewModal = ({ outingPlan, onClose, onReviewSubmitted }) => {
 
   const handleSubmit = async () => {
     try {
-      await axios.post('http://localhost:3003/api/partners/review', {
+      await axios.post('http://localhost:3003/api/reviews/', {
         outingPlanId: outingPlan._id,
         rating,
         comment
@@ -73,7 +73,7 @@ const PreviousOutingsTab = () => {
 
   const fetchPreviousOutings = async () => {
     try {
-      const response = await axios.get('http://localhost:3003/api/partners/previous-outings', {
+      const response = await axios.get('http://localhost:3003/api/outing/previous-outings', {
         withCredentials: true
       });
       setOutings(response.data);
@@ -89,7 +89,7 @@ const PreviousOutingsTab = () => {
 
   const fetchOutingReviews = async (outingId) => {
     try {
-      const response = await axios.get(`http://localhost:3003/api/partners/reviews/${outingId}`, {
+      const response = await axios.get(`http://localhost:3003/api/reviews/${outingId}`, {
         withCredentials: true
       });
       setReviews(prev => ({
@@ -101,7 +101,7 @@ const PreviousOutingsTab = () => {
     }
   };
 
-  return (
+  return (              
     <div className="space-y-4">
       <h2 className="text-2xl font-bold mb-4">Previous Outings</h2>
       {outings.map(outing => (

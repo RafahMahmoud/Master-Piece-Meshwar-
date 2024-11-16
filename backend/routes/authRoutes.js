@@ -15,22 +15,3 @@ module.exports = router
 
 
 
-//http://localhost:3003/api/auth/signup
-// {
-//     "fullName": "rafah",
-//     "email": "rafah@gmail.com",
-//     "password": "123qwe",
-//     "gender": "female",
-//     "dateOfBirth": "1998-09-07",
-//     "phoneNumber": 1234567890
-//   }
-
-//http://localhost:3003/api/auth/login
-// {
-//     "email": "rafah@gmail.com",
-//     "password": "123qwe"
-  
-//   }
-
-//http://localhost:3003/api/auth/logout
-

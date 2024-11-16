@@ -30,22 +30,3 @@ exports.getOutingReviews = async (req, res) => {
     res.status(500).json({ message: 'Error fetching reviews', error });
   }
 };
-
-
-exports.getPreviousOutings = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const today = new Date();
-    
-    const plans = await OutingPlan.find({
-      user: userId,
-      date: { $lt: today }
-    })
-    .populate('partners')
-    .sort({ date: -1 });
-    
-    res.status(200).json(plans);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching previous outings', error });
-  }
-};

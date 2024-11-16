@@ -230,13 +230,32 @@ exports.processPayment = async (req, res) => {
 exports.getAllOutingPlans = async (req, res) => {
   try {
     const plans = await OutingPlan.find()
-      .populate('user') // إذا كان ضروريًا
-      .populate('partners') // إذا كان ضروريًا
+      .populate('user')
+      .populate('partners') 
       .sort({ createdAt: -1 });
 
     res.status(200).json(plans);
   } catch (error) {
-    console.error("Error fetching outing plans:", error); // إضافة console log لمعلومات الخطأ
+    console.error("Error fetching outing plans:", error);
     res.status(500).json({ message: 'Error fetching outing plans', error });
+  }
+};
+
+
+exports.getPreviousOutings = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const today = new Date();
+    
+    const plans = await OutingPlan.find({
+      user: userId,
+      date: { $lt: today }
+    })
+    .populate('partners')
+    .sort({ date: -1 });
+    
+    res.status(200).json(plans);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching previous outings', error });
   }
 };
