@@ -40,6 +40,7 @@ const partnerSchema = new Schema({
       mealPrice: Number,
     cuisineType: { type: [String] }
   },
+  isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

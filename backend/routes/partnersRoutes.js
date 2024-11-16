@@ -9,6 +9,7 @@ router.post('/', partnerController.createPartner);
 router.patch('/:id', partnerController.updatePartner);
 router.post('/partner-logo',upload.single('logoPic'), partnerController.uploadPartnerLogo);
 router.patch('/:id/company-details', partnerController.updateCompanyDetails);
+router.patch('/:id/soft-delete', partnerController.softDeletePartner);
 module.exports = router;
 
 

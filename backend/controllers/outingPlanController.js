@@ -3,7 +3,7 @@ const Partner = require('../models/partners');
 const jwt = require('jsonwebtoken');
 const braintree = require('braintree');
 require('dotenv').config();
-// تحقق من الميزانية وتحديد الشركاء
+
 exports.checkPartnerBudget = async (req, res) => {
   try {
     const { 
@@ -12,12 +12,34 @@ exports.checkPartnerBudget = async (req, res) => {
       date, startTime, endTime 
     } = req.body;
 
-    const userId = req.user.id; // userId تم استخراجه من التوكن بواسطة middleware
+    const userId = req.user.id;
 
-    const partners = await Partner.find({ city, businessType: { $in: businessTypes } });
-    if (!partners || partners.length === 0) {
-      return res.status(404).json({ message: 'No partners found for the given city and business types' });
+    // Modified query to include isDeleted and isAccepted filters
+    const allMatchingPartners = await Partner.find({ 
+      city, 
+      businessType: { $in: businessTypes },
+      isDeleted: false,
+      isAccepted: true
+    });
+
+    if (!allMatchingPartners || allMatchingPartners.length === 0) {
+      return res.status(404).json({ message: 'No partners found for the given criteria' });
     }
+
+    // Group partners by business type
+    const partnersByType = allMatchingPartners.reduce((acc, partner) => {
+      if (!acc[partner.businessType]) {
+        acc[partner.businessType] = [];
+      }
+      acc[partner.businessType].push(partner);
+      return acc;
+    }, {});
+
+    // Randomly select one partner for each business type
+    const selectedPartners = Object.entries(partnersByType).map(([type, partners]) => {
+      const randomIndex = Math.floor(Math.random() * partners.length);
+      return partners[randomIndex];
+    });
 
     let totalCost = 0;
     let details = [];
@@ -28,10 +50,10 @@ exports.checkPartnerBudget = async (req, res) => {
       endTime,
       city,
       budget,
-      partners: partners.map(p => p._id)
+      partners: selectedPartners.map(p => p._id)
     };
 
-    partners.forEach(partner => {
+    selectedPartners.forEach(partner => {
       let partnerDetails = {
         businessType: partner.businessType,
         items: []
@@ -66,7 +88,6 @@ exports.checkPartnerBudget = async (req, res) => {
         }
       }
 
-      // Logic for other business types
       if (partner.businessType === 'sweetShop') {
         if (dessert && partner.sweetShop.dessertTypes.includes(dessert)) {
           totalCost += partner.sweetShop.dessertPrice;
@@ -125,7 +146,7 @@ exports.checkPartnerBudget = async (req, res) => {
       isWithinBudget,
       totalCost,
       details,
-      partners,
+      partners: selectedPartners, // Now only returns randomly selected partners
       planId: outingPlan._id
     });
 
@@ -134,7 +155,6 @@ exports.checkPartnerBudget = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-
 // جلب خطط المستخدم للخروج
 exports.getUserOutingPlans = async (req, res) => {
   try {

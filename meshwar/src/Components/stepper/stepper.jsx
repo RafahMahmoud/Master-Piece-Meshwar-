@@ -157,12 +157,10 @@ const StepperPopup = ({ isOpen, onClose }) => {
                 <option key={city} value={city}>{city}</option>
               ))}
             </select>
-            <input type="date" name="date" onChange={handleInputChange} className="w-full p-2 border rounded" />
-            <input type="time" name="startTime" onChange={handleInputChange} className="w-full p-2 border rounded" />
-            <input type="time" name="endTime" onChange={handleInputChange} className="w-full p-2 border rounded" />
+            <input type="date" name="date" min={new Date().toISOString().split('T')[0]} onChange={handleInputChange} className="w-full p-2 border rounded" />
             <input type="number" name="budget" onChange={handleInputChange} placeholder="Budget" className="w-full p-2 border rounded" />
           </div>
-        );
+        );      
       case 2:
         return (
           <div className="space-y-4">

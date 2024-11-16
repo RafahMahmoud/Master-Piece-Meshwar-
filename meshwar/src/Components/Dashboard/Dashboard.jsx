@@ -65,6 +65,17 @@ export default function Dashboard() {
     }
   };
 
+  const handleDeletePartner = async (partner) => {
+    if (window.confirm('Are you sure you want to delete this partner?')) {
+      try {
+        await axios.patch(`http://localhost:3003/api/partners/${partner._id}/soft-delete`);
+        fetchPartners(); // Refresh the partners list
+      } catch (error) {
+        console.error('Error deleting partner:', error);
+        alert('Failed to delete partner. Please try again.');
+      }
+    }
+  };
 
   const handleImageUpload = async (event, partnerId) => {
     const file = event.target.files[0];
@@ -209,25 +220,31 @@ export default function Dashboard() {
                   <td className="border px-4 py-2">{partner.isAccepted ? 'Accepted' : 'Rejected'}</td>
                   <td className="border px-4 py-2">{getBusinessTypeDetails(partner)}</td>
                   <td className="border px-4 py-2">
-    <button
-      onClick={() => handleAcceptReject(partner)}
-      className={`${partner.isAccepted ? 'bg-red-500' : 'bg-green-500'} text-white px-2 py-1 rounded mr-2`}
-    >
-      {partner.isAccepted ? 'Reject' : 'Accept'}
-    </button>
-    <button
-      onClick={() => handleAddDetails(partner)}
-      className="bg-blue-500 text-white px-2 py-1 rounded mx-1"
-    >
-      {partner.businessType ? 'Edit Details' : 'Add Details'}
-    </button>
-    <button
-      onClick={() => handleEditCompanyDetails(partner)}
-      className="bg-yellow-500 text-white px-2 py-1 rounded ml-1"
-    >
-      Edit Company
-    </button>
-  </td>
+      <button
+        onClick={() => handleAcceptReject(partner)}
+        className={`${partner.isAccepted ? 'bg-red-500' : 'bg-green-500'} text-white px-2 py-1 rounded mr-2`}
+      >
+        {partner.isAccepted ? 'Reject' : 'Accept'}
+      </button>
+      <button
+        onClick={() => handleAddDetails(partner)}
+        className="bg-blue-500 text-white px-2 py-1 rounded mx-1"
+      >
+        {partner.businessType ? 'Edit Details' : 'Add Details'}
+      </button>
+      <button
+        onClick={() => handleEditCompanyDetails(partner)}
+        className="bg-yellow-500 text-white px-2 py-1 rounded mx-1"
+      >
+        Edit Company
+      </button>
+      <button
+        onClick={() => handleDeletePartner(partner)}
+        className="bg-red-600 text-white px-2 py-1 rounded ml-1"
+      >
+        Delete
+      </button>
+    </td>
                 </tr>
               ))}
             </tbody>

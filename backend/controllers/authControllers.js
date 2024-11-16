@@ -1,6 +1,44 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
+const nodemailer = require('nodemailer');
+
+// Configure nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'ayaalrimawi406@gmail.com',
+    pass: 'admt rsfo lxki xrzx'
+  }
+});
+
+// Test email connection
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log('Error with email server:', error);
+  } else {
+    console.log('Email server is ready to send messages');
+  }
+});
+
+// Utility function to send emails
+async function sendEmail(to, subject, htmlContent) {
+  try {
+    const mailOptions = {
+      from: 'ayaalrimawi406@gmail.com',
+      to: to,
+      subject: subject,
+      html: htmlContent
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully:', info.response);
+    return true;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return false;
+  }
+}
 
 exports.signup = async (req, res) => {
   try {
@@ -169,6 +207,7 @@ exports.getAllUsers = async (req, res) => {
 
 
 
+// Toggle user active status and send notification email
 exports.toggleUserStatus = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -178,11 +217,32 @@ exports.toggleUserStatus = async (req, res) => {
       userId,
       { isActive },
       { new: true }
-    );
+    ).select('-password');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    // Prepare and send status change notification email
+    const statusChangeEmailHtml = isActive ? `
+      <h1>Account Activated</h1>
+      <p>Dear ${user.fullName},</p>
+      <p>Your Meshwar account has been successfully activated. You can now log in and access all features.</p>
+      <p>If you have any questions or concerns, please don't hesitate to contact our support team.</p>
+      <p>Best regards,<br>Meshwar Team</p>
+    ` : `
+      <h1>Account Deactivated</h1>
+      <p>Dear ${user.fullName},</p>
+      <p>Your Meshwar account has been deactivated. During this time, you won't be able to access our services.</p>
+      <p>If you believe this is a mistake or would like to reactivate your account, please contact our support team.</p>
+      <p>Best regards,<br>Meshwar Team</p>
+    `;
+
+    await sendEmail(
+      user.email,
+      `Meshwar Account ${isActive ? 'Activated' : 'Deactivated'}`,
+      statusChangeEmailHtml
+    );
 
     res.status(200).json({
       message: `User ${isActive ? 'activated' : 'deactivated'} successfully`,
