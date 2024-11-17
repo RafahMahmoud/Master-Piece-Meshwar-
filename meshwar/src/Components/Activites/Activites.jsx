@@ -72,39 +72,43 @@ function Activities() {
     };
 
     return (
-        <div className='reviews mt-20 px-4  py-8 bg-[#F9E1FF40] mx-[9rem]'>
+        <div className='reviews mt-20 px-4 py-8 bg-gradient-to-b from-purple-50 to-white mx-4 sm:mx-8 lg:mx-[9rem]'>
             <p className="text-2xl font-bold text-center mb-8">What To Do?</p>
-            <div className=' flex mx-16 gap-8 justify-between items-center'>
-            <button
-                    className={`w-16 h-8 rounded-full ${currentPage === 1 ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}`}
+            <div className='flex flex-col sm:flex-row mx-4 sm:mx-8 lg:mx-16 gap-4 sm:gap-8 justify-between items-center'>
+                <button
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm
+                        ${currentPage === 1 ? 'bg-gray-100 cursor-not-allowed' : 'bg-white hover:bg-gray-50'}`}
                     onClick={handlePrevious}
                     disabled={currentPage === 1}
                 >
-                    &lt; {/* Left arrow */}
+                    <span className="text-gray-600">&lt;</span>
                 </button>
-                <div className="flex flex-wrap gap-4 justify-center">
-                {currentData.map((item, index) => (
-                    <div key={index} className=' p-0'>
-                        <img className=" h-[11.5rem] w-[13.5rem] object-cover" src={item.img} alt="Activity Picture" />
-                    </div>
-                ))}
-                </div>
-              
-                   <button
-                    className={`w-16 h-8 rounded-full  ${currentPage === numPages ? 'bg-gray-100 cursor-not-allowed' : 'bg-white '}`}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
+                    {currentData.map((item, index) => (
+                        <div key={index} className='p-0 w-full max-w-[13.5rem]'>
+                            <img 
+                                className="w-full h-[11.5rem] object-cover rounded-lg shadow-md hover:shadow-xl transition-shadow"
+                                src={item.img} 
+                                alt="Activity Picture" 
+                            />
+                        </div>
+                    ))}
+                   </div>
+                <button
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm
+                        ${currentPage === numPages ? 'bg-gray-100 cursor-not-allowed' : 'bg-white hover:bg-gray-50'}`}
                     onClick={handleNext}
                     disabled={currentPage === numPages}
                 >
-                    &gt; {/* Right arrow */}
+                    <span className="text-gray-600">&gt;</span>
                 </button>
             </div>
-            <div className='flex justify-center items-center mt-4 mx-[9rem]'>
-               
+            <div className='flex justify-center items-center mt-4'>
                 <div className='flex items-center gap-2'>
                     {Array.from({ length: numPages }, (_, i) => i + 1).map((page) => (
                         <button
                             key={page}
-                            className={` rounded-full ${currentPage === page ? 'bg-black w-3 h-3 ' : 'bg-gray-300 w-2 h-2 '}`}
+                            className={`rounded-full ${currentPage === page ? 'bg-black w-3 h-3' : 'bg-gray-300 w-2 h-2'}`}
                             onClick={() => setCurrentPage(page)}
                         />
                     ))}
@@ -113,5 +117,4 @@ function Activities() {
         </div>
     );
 }
-
 export default Activities;

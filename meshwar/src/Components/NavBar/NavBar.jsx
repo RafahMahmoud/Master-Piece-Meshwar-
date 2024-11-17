@@ -109,6 +109,9 @@ const NavBar = () => {
             <NavLink to="/" className="block text-gray-600 hover:bg-black hover:text-white px-4 py-2 rounded" onClick={() => setIsMenuOpen(false)}>
               Home
             </NavLink>
+            <NavLink to="/Community" className="block text-gray-600 hover:bg-black hover:text-white px-4 py-2 rounded" onClick={() => setIsMenuOpen(false)}>
+            Community
+            </NavLink>
             <NavLink to="/BecomePartner" className="block text-gray-600 hover:bg-black hover:text-white px-4 py-2 rounded" onClick={() => setIsMenuOpen(false)}>
               Become a partner
             </NavLink>

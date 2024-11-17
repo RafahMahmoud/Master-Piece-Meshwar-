@@ -11,4 +11,5 @@ router.get('/generate-client-token', authenticateToken, outingPlanController.gen
 router.post('/process-payment', authenticateToken, outingPlanController.processPayment);
 router.get('/all', outingPlanController.getAllOutingPlans);
 router.get('/previous-outings', authenticateToken, outingPlanController.getPreviousOutings);
+router.get('/upcoming-outings', authenticateToken, outingPlanController.getUpcomingOutings);
 module.exports = router;

@@ -14,7 +14,8 @@ const partnerRoutes = require('./routes/partnersRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const planRoutes = require('./routes/outingPlan');
-const reviewRoutes = require('./routes/reviewRoutes')
+const reviewRoutes = require('./routes/reviewRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const connectDB = require('./config/db');
 connectDB();
@@ -56,7 +57,8 @@ app.use('/api', requestRoutes);
 app.use('/api/partners', partnerRoutes);
 app.use('/api/outing', planRoutes);
 app.use('/api/posts', postRoutes);
-app.use('/api/reviews',reviewRoutes)
+app.use('/api/reviews',reviewRoutes);
+app.use('/api/admin',adminRoutes)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

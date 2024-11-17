@@ -18,10 +18,11 @@ import p15 from '../../assets/p16.jpg';
 import React, { useState } from 'react';
 import Reviews from '../Reviews/Reviews';
 import Activities from '../Activites/Activites';
-import Restaurents from '../Restaurenys/Restaurents';
+import Restaurents from '../Restaurents/Restaurents';
 import './Home.css';
 import NavBar from '../NavBar/NavBar';
 import Footer from '../Footer/Footer';
+import HeroSection from './section';
 
 
 function Home() {
@@ -39,7 +40,7 @@ function Home() {
                   <p className="Herosection-description text-base md:text-lg mb-4">
                       Meshwar offers a customized group outing experience tailored to your preferences. By seamlessly integrating personal information, food choices, and activity preferences, Meshwar simplifies the process of planning and enjoying trips and spending unforgettable moments with your loved ones.
                   </p>
-                  <button className="Herosection-button bg-teal-500 text-white p-3 text-lg font-bold rounded-lg">
+                  <button className="Herosection-button bg-teal-500 hover:bg-teal-600 text-white p-3 text-lg font-bold rounded-lg">
                       Start planning
                   </button>
               </div>
@@ -56,7 +57,7 @@ function Home() {
                   reverse={true}
               />
           </main>
-
+          <HeroSection/>
           <Restaurents />
           <Activities />
           <Reviews />

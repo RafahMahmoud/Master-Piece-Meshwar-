@@ -6,17 +6,12 @@ import Home from './Components/Home/Home';
 import LogIn from './Components/LogIn/LogIn';
 import NewGroup from './Components/NewGroup/NewGroup';
 import SocialMediaProfile from './Components/NewOuting/NewOuting';
-import OutDetails from './Components/OutDetails/OutDetails';
 import Profile from './Components/Profile/Profile';
-import {Rating} from './Components/Rating/Rating';
-import ResetPassword from './Components/ResetPassword/ResetPassword';
-import { DisabledRating } from './Components/Rating/Rating';
 import SignUp from './Components/SignUP/SignUp';
 import MeshwarAdminDashboard from './Components/Dashboard/Dashboard';
-import Qestionair from './Components/Questionair/Questionair';
 import Admin from './Components/Admin/Admin';
 import Community from './Components/Community/community';
-
+import LoginAdmin from './Components/Dashboard/LoginAdmin';
 function App() {
  
   return (
@@ -25,7 +20,6 @@ function App() {
       <BrowserRouter>
         <Routes>
         <Route path="admin" element={<Admin/>} />
-        <Route path="Questionair" element={<Qestionair />} />
         <Route path="Dashboard" element={<MeshwarAdminDashboard />} />
         <Route path="BecomePartner" element={<BecomePartner />} />
         <Route path="Community" element={<Community />} />
@@ -33,10 +27,10 @@ function App() {
           <Route path="LogIn" element={<LogIn />} />
           <Route path="NewGroup" element={<NewGroup />} />
           <Route path="NewOuting" element={<SocialMediaProfile/>} />
-          <Route path="OutDetails" element={<OutDetails />} />
           <Route path="Profile" element={<Profile />} />
-          <Route path="ResetPassword" element={<ResetPassword/>} />
           <Route path="SignUp" element={<SignUp />} />
+          <Route path="LoginAdmin" element={<LoginAdmin />} />
+
         </Routes>
       </BrowserRouter>
     </>

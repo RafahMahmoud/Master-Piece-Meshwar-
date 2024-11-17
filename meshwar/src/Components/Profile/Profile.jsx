@@ -229,6 +229,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import StepperPopup from '../stepper/stepper';
 import PreviousOutingsTab from './PreviousOutingsTab';
+import UpcomingOutingsTab from './UpcomingOutings';
 const SocialMediaProfile = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [userData, setUserData] = useState(null);
@@ -402,13 +403,17 @@ const SocialMediaProfile = () => {
             </div>
           </div>
         );
-      default:
-        return <div>Select a tab</div>;
-    }
-  };
+        case 'previousOutings':
+          return <PreviousOutingsTab />;
+          case 'upcomingOutings':
+  return <UpcomingOutingsTab />;
+        default:
+          return <div>Select a tab</div>;
+      }
+    };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gradient-to-b from-purple-50 to-white min-h-screen">
       <NavBar />
       <div className="flex flex-col md:flex-row container mx-auto py-8">
         <div className="w-full md:w-1/4 md:pr-8 mb-8 md:mb-0">
@@ -432,19 +437,31 @@ const SocialMediaProfile = () => {
               <h2 className="text-2xl font-semibold mb-[1.6rem]">{userData?.fullName}</h2>
             </div>
             <nav className="space-y-2">
-              <button
-                className={`w-full py-2 px-4 text-left rounded-md hover:bg-[#F9E1FF] transition duration-300 ${activeTab === 'profile' ? 'bg-[#F9E1FF]' : ''}`}
-                onClick={() => setActiveTab('profile')}
-              >
-                Profile
-              </button>
-              <button
-  className={`w-full py-2 px-4 text-left rounded-md hover:bg-[#F9E1FF] transition duration-300 ${activeTab === 'previousOutings' ? 'bg-[#F9E1FF]' : ''}`}
-  onClick={() => setActiveTab('previousOutings')}
+  <button
+    className={`w-full py-2 px-4 text-left rounded-md hover:bg-[#F9E1FF] transition duration-300 ${
+      activeTab === 'profile' ? 'bg-[#F9E1FF]' : ''
+    }`}
+    onClick={() => setActiveTab('profile')}
+  >
+    Profile
+  </button>
+  <button
+    className={`w-full py-2 px-4 text-left rounded-md hover:bg-[#F9E1FF] transition duration-300 ${
+      activeTab === 'previousOutings' ? 'bg-[#F9E1FF]' : ''
+    }`}
+    onClick={() => setActiveTab('previousOutings')}
+  >
+    Previous Outings
+  </button>
+  <button
+  className={`w-full py-2 px-4 text-left rounded-md hover:bg-[#F9E1FF] transition duration-300 ${
+    activeTab === 'upcomingOutings' ? 'bg-[#F9E1FF]' : ''
+  }`}
+  onClick={() => setActiveTab('upcomingOutings')}
 >
-  Previous Outings
+  Upcoming Outings
 </button>
-            </nav>
+</nav>
           </div>
         </div>
 

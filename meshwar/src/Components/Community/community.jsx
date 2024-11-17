@@ -1,314 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import axiosInstance from '../../axiosConfig';
-// import NavBar from '../NavBar/NavBar';
-// import Footer from '../Footer/Footer';
-// import { Heart, MessageCircle, Share2, Send } from 'lucide-react';
-// import {
-//   FacebookShareButton,
-//   TwitterShareButton,
-//   WhatsappShareButton,
-//   FacebookIcon,
-//   TwitterIcon,
-//   WhatsappIcon,
-// } from 'react-share';
-
-// const Community = () => {
-//   const [posts, setPosts] = useState([]);
-//   const [loading, setLoading] = useState(false);
-//   const [newPostContent, setNewPostContent] = useState('');
-//   const [showCommentBox, setShowCommentBox] = useState({});
-//   const [commentContent, setCommentContent] = useState({});
-//   const [showShareModal, setShowShareModal] = useState(null);
-//   const [currentUser, setCurrentUser] = useState(null);
-
-//   // تحقق من وجود المستخدم عند تحميل الصفحة
-//   useEffect(() => {
-//     const checkAuth = async () => {
-//       try {
-//         const response = await axiosInstance.get('/auth/me'); // اضيفي هذا الراوت في الباك اند
-//         setCurrentUser(response.data);
-//       } catch (error) {
-//         console.error('Auth error:', error);
-//       }
-//     };
-//     checkAuth();
-//   }, []);
-
-//   useEffect(() => {
-//     fetchPosts();
-//   }, []);
-
-//   const fetchPosts = async () => {
-//     try {
-//       setLoading(true);
-//       const response = await axiosInstance.get('/posts');
-//       setPosts(response.data);
-//     } catch (error) {
-//       console.error('Error fetching posts:', error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleSubmitPost = async (e) => {
-//     e.preventDefault();
-//     if (!newPostContent.trim()) return;
-    
-//     try {
-//       const response = await axiosInstance.post('/posts', { 
-//         content: newPostContent 
-//       });
-//       setPosts(prevPosts => [response.data, ...prevPosts]);
-//       setNewPostContent('');
-//     } catch (error) {
-//       console.error('Error creating post:', error);
-//     }
-//   };
-
-//   const handleLikePost = async (postId) => {
-//     try {
-//       const response = await axiosInstance.put(`/posts/${postId}/like`);
-//       setPosts(prevPosts => 
-//         prevPosts.map(post => 
-//           post._id === postId ? { ...post, likes: response.data.likes } : post
-//         )
-//       );
-//     } catch (error) {
-//       console.error('Error liking post:', error);
-//     }
-//   };
-
-//   const toggleCommentBox = (postId) => {
-//     setShowCommentBox(prev => ({
-//       ...prev,
-//       [postId]: !prev[postId]
-//     }));
-//   };
-
-//   const handleAddComment = async (postId) => {
-//     if (!commentContent[postId]?.trim()) return;
-
-//     try {
-//       const response = await axiosInstance.post(`/posts/${postId}/comment`, {
-//         content: commentContent[postId]
-//       });
-      
-//       setPosts(prevPosts => 
-//         prevPosts.map(post => 
-//           post._id === postId 
-//             ? { ...post, comments: [...post.comments, response.data] }
-//             : post
-//         )
-//       );
-//       setCommentContent(prev => ({ ...prev, [postId]: '' }));
-//     } catch (error) {
-//       console.error('Error adding comment:', error);
-//     }
-//   };
-
-//   // Share Modal Component
-//   const ShareModal = ({ postId, onClose }) => {
-//     const shareUrl = `${window.location.origin}/post/${postId}`;
-    
-//     return (
-//       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-//         <div className="bg-white rounded-lg p-6 w-80">
-//           <h3 className="text-lg font-semibold mb-4">Share this post</h3>
-//           <div className="flex justify-around mb-4">
-//             <FacebookShareButton url={shareUrl}>
-//               <FacebookIcon size={40} round />
-//             </FacebookShareButton>
-//             <TwitterShareButton url={shareUrl}>
-//               <TwitterIcon size={40} round />
-//             </TwitterShareButton>
-//             <WhatsappShareButton url={shareUrl}>
-//               <WhatsappIcon size={40} round />
-//             </WhatsappShareButton>
-//           </div>
-//           <button
-//             onClick={onClose}
-//             className="w-full py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-//           >
-//             Close
-//           </button>
-//         </div>
-//       </div>
-//     );
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 ">
-//       <NavBar/>
-//       <div className="max-w-2xl mx-auto px-4 pt-8">
-//         {currentUser && (
-//           <div className="bg-white rounded-lg shadow p-6 mb-8">
-//             <div className="flex items-start space-x-4">
-//               <img
-//                 src={currentUser.profilePic || "/api/placeholder/40/40"}
-//                 alt="Profile"
-//                 className="w-10 h-10 rounded-full"
-//               />
-//               <div className="flex-1">
-//                 <textarea
-//                   value={newPostContent}
-//                   onChange={(e) => setNewPostContent(e.target.value)}
-//                   placeholder="What's on your mind?"
-//                   className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-//                   rows="3"
-//                 />
-//                 <button
-//                   onClick={handleSubmitPost}
-//                   className="mt-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
-//                 >
-//                   Post
-//                 </button>
-//               </div>
-//             </div>
-//           </div>
-//         )}
-
-//         {loading ? (
-//           <div className="text-center">
-//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto"></div>
-//           </div>
-//         ) : (
-//           <div className="space-y-6">
-//             {posts.map((post) => (
-//               <div key={post._id} className="bg-white rounded-lg shadow">
-//                 <div className="p-4">
-//                   <div className="flex items-center space-x-3 mb-4">
-//                     <img
-//                       src={post.user.profilePic || "/api/placeholder/40/40"}
-//                       alt={post.user.fullName}
-//                       className="w-10 h-10 rounded-full"
-//                     />
-//                     <div>
-//                       <h3 className="font-semibold">{post.user.fullName}</h3>
-//                       <p className="text-sm text-gray-500">
-//                         {new Date(post.createdAt).toLocaleDateString()}
-//                       </p>
-//                     </div>
-//                   </div>
-                  
-//                   <p className="text-gray-800 mb-4">{post.content}</p>
-                  
-//                   {post.image && (
-//                     <img
-//                       src={post.image}
-//                       alt="Post content"
-//                       className="rounded-lg mb-4 w-full"
-//                     />
-//                   )}
-                  
-//                   <div className="flex items-center justify-between pt-4 border-t">
-//                     <button 
-//                       onClick={() => handleLikePost(post._id)}
-//                       className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors"
-//                     >
-//                       <Heart className={`h-5 w-5 ${post.likes.includes(currentUser?._id) ? 'fill-red-500 text-red-500' : ''}`} />
-//                       <span>{post.likes.length}</span>
-//                     </button>
-                    
-//                     <button
-//                       onClick={() => toggleCommentBox(post._id)}
-//                       className="flex items-center space-x-2 text-gray-500 hover:text-teal-500 transition-colors"
-//                     >
-//                       <MessageCircle className="h-5 w-5" />
-//                       <span>{post.comments.length}</span>
-//                     </button>
-                    
-//                     <button 
-//                       onClick={() => setShowShareModal(post._id)}
-//                       className="flex items-center space-x-2 text-gray-500 hover:text-teal-500 transition-colors"
-//                     >
-//                       <Share2 className="h-5 w-5" />
-//                       <span>{post.shares}</span>
-//                     </button>
-//                   </div>
-//                 </div>
-
-//                 {showCommentBox[post._id] && (
-//                   <>
-//                     {post.comments.length > 0 && (
-//                       <div className="bg-gray-50 p-4 border-t">
-//                         {post.comments.map((comment) => (
-//                           <div key={comment._id} className="mb-4">
-//                             <div className="flex items-start space-x-3">
-//                               <img
-//                                 src={comment.user.profilePic || "/api/placeholder/32/32"}
-//                                 alt={comment.user.fullName}
-//                                 className="w-8 h-8 rounded-full"
-//                               />
-//                               <div className="flex-1">
-//                                 <div className="bg-gray-100 rounded-lg p-3">
-//                                   <h4 className="font-semibold">{comment.user.fullName}</h4>
-//                                   <p className="text-gray-800">{comment.content}</p>
-//                                 </div>
-//                                 <div className="mt-2 ml-2 text-sm text-gray-500">
-//                                   <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-//                                 </div>
-//                               </div>
-//                             </div>
-//                           </div>
-//                         ))}
-//                       </div>
-//                     )}
-
-//                     {currentUser && (
-//                       <div className="p-4 border-t">
-//                         <div className="flex items-center space-x-3">
-//                           <img
-//                             src={currentUser.profilePic || "/api/placeholder/32/32"}
-//                             alt="Your profile"
-//                             className="w-8 h-8 rounded-full"
-//                           />
-//                           <div className="flex-1 flex items-center space-x-2">
-//                             <input
-//                               type="text"
-//                               value={commentContent[post._id] || ''}
-//                               onChange={(e) => setCommentContent(prev => ({
-//                                 ...prev,
-//                                 [post._id]: e.target.value
-//                               }))}
-//                               placeholder="Write a comment..."
-//                               className="flex-1 p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-//                             />
-//                             <button
-//                               onClick={() => handleAddComment(post._id)}
-//                               className="p-2 text-teal-500 hover:bg-teal-50 rounded-full transition-colors"
-//                             >
-//                               <Send className="h-5 w-5" />
-//                             </button>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     )}
-//                   </>
-//                 )}
-//               </div>
-//             ))}
-//           </div>
-//         )}
-
-//         {showShareModal && (
-//           <ShareModal
-//             postId={showShareModal}
-//             onClose={() => setShowShareModal(null)}
-//           />
-//         )}
-//       </div>
-//       <Footer/>
-//     </div>
-//   );
-// };
-
-// export default Community;
-
-
-
-
-
-// Frontend - Community.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import axiosInstance from '../../axiosConfig';
 import NavBar from '../NavBar/NavBar';
@@ -316,15 +5,14 @@ import Footer from '../Footer/Footer';
 import { Heart, MessageCircle, Share2, Send, Image, Reply } from 'lucide-react';
 import {
   FacebookShareButton,
-  TwitterShareButton,
   WhatsappShareButton,
   FacebookIcon,
-  TwitterIcon,
   WhatsappIcon,
 } from 'react-share';
 import { MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import route from '../../assets/com.png';
 
-// Add these new components at the top of your Community component
+
 const OptionsDropdown = ({ isOpen, onEdit, onDelete, onClose }) => {
   if (!isOpen) return null;
 
@@ -508,7 +196,6 @@ const Community = () => {
 
       const response = await axiosInstance.put(endpoint, { content: newContent });
 
-      // Update UI based on edit
       if (type === 'post') {
         setPosts(posts.map(post => 
           post._id === id ? { ...post, content: newContent } : post
@@ -677,9 +364,6 @@ const Community = () => {
             <FacebookShareButton url={shareUrl}>
               <FacebookIcon size={40} round />
             </FacebookShareButton>
-            <TwitterShareButton url={shareUrl}>
-              <TwitterIcon size={40} round />
-            </TwitterShareButton>
         
             <WhatsappShareButton url={shareUrl}>
               <WhatsappIcon size={40} round />
@@ -709,7 +393,9 @@ const Community = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white"
+
+    >
       <NavBar />
       <div className="max-w-2xl mx-auto px-4 pt-8">
         {currentUser && (
